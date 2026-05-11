@@ -34,4 +34,4 @@ las entidades con sus atributos y tipo de forma de tabla para cada una de las en
 <img width="553" height="782" alt="image" src="https://github.com/user-attachments/assets/f403f325-4830-4541-9607-afe243d1aa32" />
 
 ## 
-
+de acuerdo a tu respuesta anterior puedes generar un script en sql para descragar con el nombre de bdruletadecisiones  para las 10 entidades con su relacion
