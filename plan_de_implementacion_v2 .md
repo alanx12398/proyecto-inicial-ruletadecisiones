@@ -1,7 +1,12 @@
 # 📱 Plan de Implementación Maestro: "Antigravity" 
 
 Este plan está diseñado para un entorno multiplataforma (Android, iOS, Web, Windows) utilizando el patrón de arquitectura **Feature-First + Provider**.
+🎨 Estética y Diseño (Concepto "Zero-G")
+Colores Primarios: #0A0E21 (Azul Espacial Profundo), #00E5FF (Cian Neón), #7000FF (Violeta Cósmico).
 
+Diseño de Interfaz: Glassmorphism (efecto de cristal) para tarjetas, con bordes de neón sutiles.
+
+Gestión de Imágenes Web: Uso de CachedNetworkImage con animaciones de carga (Shimmer) para evitar parpadeos al recuperar iconos de categorías u opciones desde URLs externas.
 ## 📊 1. Modelo de Datos Relacional (Tablas en Firestore)
 
 La base de datos se estructurará en **Cloud Firestore** siguiendo fielmente las imágenes proporcionadas:
