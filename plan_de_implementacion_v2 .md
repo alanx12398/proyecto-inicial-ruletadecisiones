@@ -1,6 +1,22 @@
 ## 📋 Plan de Implementación Funcional Extenso: "Antigravity"
+🎨 Concepto Visual y UI/UX (Gravity-Zero Design)
+El diseño se basa en la idea de elementos que flotan en el espacio profundo.
 
+Paleta de Colores:
+
+Fondo Base: #050505 (Negro absoluto para resaltar el contraste).
+
+Superficies (Cards/Glass): #1A1A1A con opacidad del 80% y desenfoque (BackdropFilter).
+
+Acento Primario: #00E5FF (Cian Eléctrico) para acciones de giro.
+
+Acento Secundario: #7000FF (Púrpura Galáctico) para categorías.
+
+Tratamiento de Imágenes: Las imágenes se obtendrán vía URL. Se implementará un Shimmer Effect (efecto de carga) mientras la imagen se descarga de la web para evitar saltos visuales.
+
+Interactividad: La ruleta no solo girará; tendrá una animación de "entrada" con escalado y opacidad (Fade-in Scale).
 ### 📂 Estructura de Carpetas (Arquitectura Profesional)
+
 
 ```text
 lib/
