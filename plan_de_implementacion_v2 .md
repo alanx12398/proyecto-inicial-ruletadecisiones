@@ -1,112 +1,109 @@
-Este es el plan de ingeniería más exhaustivo para **Antigravity**. Se ha diseñado para ser una guía de referencia técnica completa, integrando el modelo de datos relacional de las imágenes directamente en el flujo de trabajo de Flutter y Firebase.
+# 📱 Plan de Implementación Maestro: "Antigravity" 
 
----
+Este plan está diseñado para un entorno multiplataforma (Android, iOS, Web, Windows) utilizando el patrón de arquitectura **Feature-First + Provider**.
 
-# 📱 Plan de Implementación Maestro: "Antigravity"
+## 📊 1. Modelo de Datos Relacional (Tablas en Firestore)
 
-Este plan está optimizado para un entorno multiplataforma (Android, iOS, Web, Windows) utilizando **VS Code** y el patrón de arquitectura **Feature-First + Provider**.
-
-## 🎨 1. Estética y Diseño (Concepto "Zero-G")
-
-* **Colores Primarios:** `#0A0E21` (Azul Espacial Profundo), `#00E5FF` (Cian Neón), `#7000FF` (Violeta Cósmico).
-* **Diseño de Interfaz:** Glassmorphism (efecto de cristal) para tarjetas, con bordes de neón sutiles.
-* **Gestión de Imágenes Web:** Uso de `CachedNetworkImage` con animaciones de carga (Shimmer) para evitar parpadeos al recuperar iconos de categorías u opciones desde URLs externas.
-
----
-
-## 📊 2. Modelo de Datos (Estructura de Tablas)
-
-A continuación, se detallan las tablas que se implementarán en **Cloud Firestore**, respetando la lógica de las imágenes proporcionadas:
+La base de datos se estructurará en **Cloud Firestore** siguiendo fielmente las imágenes proporcionadas:
 
 | Tabla | Campos Clave | Propósito |
 | --- | --- | --- |
-| **USUARIO** | `id`, `nombre`, `email`, `contrasena_hash`, `activo`, `creado_en` | Gestión de perfiles y sesiones. |
-| **CATEGORIA** | `id`, `nombre`, `descripcion`, `icono_url`, `activo` | Clasificación web de las ruletas. |
-| **RULETA** | `id`, `usuario_id`, `categoria_id`, `titulo`, `es_publica`, `creado_en` | Entidad principal de la decisión. |
-| **OPCION** | `id`, `ruleta_id`, `nombre`, `peso`, `color_hex`, `imagen_url`, `activo` | Sectores de la ruleta (pesos determinan el tamaño). |
-| **CONFIGURACION** | `id`, `ruleta_id`, `duracion_giro_ms`, `sonido_activado`, `repeticion`, `esquema` | Parámetros físicos y estéticos del giro. |
-| **HISTORIAL** | `id`, `ruleta_id`, `opcion_ganadora_id`, `usuario_id`, `fecha_giro`, `ip_origen` | Auditoría y trazabilidad de resultados. |
+| **USUARIO** | `id`, `nombre`, `email`, `contrasena_hash`, `activo`, `creado_en` | Perfiles de usuario y credenciales. |
+| **CATEGORIA** | `id`, `nombre`, `descripcion`, `icono_url`, `activo` | Clasificación temática (imágenes desde la web). |
+| **RULETA** | `id`, `usuario_id`, `categoria_id`, `titulo`, `es_publica`, `creado_en` | Entidad de decisión creada por el usuario. |
+| **OPCION** | `id`, `ruleta_id`, `nombre`, `peso`, `color_hex`, `imagen_url`, `activo` | Sectores dinámicos (imágenes desde la web). |
+| **CONFIGURACION** | `id`, `ruleta_id`, `duracion_giro_ms`, `sonido_activado`, `esquema` | Parámetros físicos y estéticos del motor de giro. |
+| **HISTORIAL** | `id`, `ruleta_id`, `opcion_ganadora_id`, `usuario_id`, `fecha_giro`, `ip` | Auditoría de resultados y estadísticas de uso. |
 
 ---
 
-## 📂 3. Estructura de Carpetas (Arquitectura Profesional)
+## 📂 2. Estructura de Carpetas Profesional
 
 ```text
 lib/
 ├── core/
-│   ├── theme/              # Configuración de colores y fuentes (Orbitron/Inter)
-│   ├── network/            # Gestor de caché para imágenes web y conexión
-│   └── utils/              # MathEngine (Cálculo de sectores según pesos)
+│   ├── theme/              # Diseño Space-Dark y Glassmorphism
+│   ├── network/            # Gestor de caché para imágenes externas (Web)
+│   └── utils/              # MathEngine.dart (Cálculo de grados según pesos)
 ├── data/
-│   ├── models/             # Clases Dart para cada tabla (Usuario, Ruleta, etc.)
-│   └── repositories/       # Abstracción de Firestore (CRUD puro)
+│   ├── models/             # Mapeo de las 6 tablas (Usuario, Ruleta, etc.)
+│   └── repositories/       # Servicios CRUD para Firebase
 ├── providers/              # Lógica de Estado (ChangeNotifiers)
 │   ├── auth_provider.dart
-│   ├── roulette_provider.dart  # Motor de giro y gestión de opciones
-│   └── history_provider.dart   # Registro de resultados
+│   ├── roulette_provider.dart
+│   ├── config_provider.dart
+│   └── history_provider.dart
 ├── ui/
 │   ├── features/
-│   │   ├── auth/           # Vistas de acceso basado en tabla USUARIO
+│   │   ├── auth/           # Login y Registro (Tabla USUARIO)
 │   │   ├── dashboard/      # Lista de CATEGORIAS y RULETAS
 │   │   ├── editor/         # Configuración de pesos y URLs de imágenes
-│   │   └── roulette/       # El componente CustomPaint interactivo
-│   └── shared/             # Widgets globales (ShimmerLoaders, WebImage)
-└── main.dart               # Inicialización Multi-plataforma
+│   │   └── roulette/       # Componente CustomPaint con carga de imágenes web
+│   └── shared/             # Widgets globales (ShimmerLoaders, CustomModals)
+└── app.dart                # Configuración de rutas y MultiProvider
 
 ```
 
 ---
 
-## 📋 4. Plan de Implementación por Fases (Extenso)
+## 📋 3. Plan de Implementación por Fases
 
-### 🔹 Fase 1: Infraestructura y Modelado (Días 1-3)
+### 🔹 Fase 1: Cimientos y Configuración Multiplataforma
 
-1. **Configuración de Firebase:** Crear proyecto y registrar apps para Android, iOS, Web y Windows.
-2. **Generación de Modelos:** Crear las clases Dart que espejen las tablas. Implementar métodos `toFirestore()` y `fromFirestore()`.
-3. **Seguridad:** Configurar las *Rules* de Firestore para proteger los datos de `USUARIO` y permitir lectura pública de `CATEGORIA`.
+* **Firebase Setup:** Crear el proyecto y registrar las aplicaciones para Android, iOS, Web y Windows.
+* **Seguridad Firestore:** Escribir reglas para que los usuarios solo editen sus propias ruletas, pero puedan leer las marcadas como `es_publica == true`.
+* **SDKs:** Instalación de Flutter y configuración de los binarios para escritorio (Windows) y web.
 
-### 🔹 Fase 2: Gestión de Recursos Web (Días 4-6)
+### 🔹 Fase 2: Modelado Atómico de Datos
 
-1. **Carga Optimizada:** Implementar el componente `AntigravityImage` que gestione URLs externas de las tablas `OPCION` y `CATEGORIA`.
-2. **Caché:** Configurar `flutter_cache_manager` para que las imágenes de la web persistan en el dispositivo tras la primera carga.
+* **Data Models:** Crear clases Dart para las 6 tablas con métodos `fromFirestore()` y `toFirestore()`.
+* **Manejo de UUIDs:** Implementar la generación de IDs únicos para asegurar que cada `RULETA` y `OPCION` sea rastreable globalmente.
 
-### 🔹 Fase 3: Autenticación y Perfil (Días 7-9)
+### 🔹 Fase 3: Motor de Carga de Imágenes Web
 
-1. **Login/Registro:** Conectar con Firebase Auth y sincronizar datos con la tabla `USUARIO`.
-2. **Persistencia:** Manejar el estado del usuario para que la sesión se mantenga activa entre reinicios de la app.
+* **Caché Avanzado:** Implementar `CachedNetworkImage` para los campos `icono_url` y `imagen_url`.
+* **Feedback Visual:** Crear un widget personalizado con **Shimmer Effect** que se muestre mientras la imagen se descarga de la web, evitando saltos de diseño.
 
-### 🔹 Fase 4: El Motor de la Ruleta (Días 10-14)
+### 🔹 Fase 4: Autenticación y Perfil de Usuario
 
-1. **Lógica Matemática:** Programar el algoritmo que toma los `peso` de la tabla `OPCION` y genera los ángulos: $Grados = 360 \times (\frac{peso}{peso\_total})$.
-2. **CustomPaint:** Desarrollar el renderizador que dibuja los sectores usando el `color_hex`.
-3. **Animación Física:** Integrar `AnimationController` usando la `duracion_giro_ms` de la tabla `CONFIGURACION`.
+* **Flujo de Sesión:** Registro y Login conectado a la tabla **USUARIO**.
+* **Persistencia:** Implementar el guardado del token de Firebase Auth para que el usuario no deba loguearse en cada apertura.
 
-### 🔹 Fase 5: Editor y Personalización (Días 15-18)
+### 🔹 Fase 5: Dashboard y Navegación por Categorías
 
-1. **Editor de Opciones:** Pantalla para añadir ítems, definir pesos y pegar URLs de imágenes web.
-2. **Configuración:** Panel para activar/desactivar `sonido_activado` y elegir el `esquema_color`.
+* **Categorización:** Mostrar el Grid de la tabla **CATEGORIA** recuperando sus iconos de la web.
+* **Filtrado:** Lógica para mostrar solo las ruletas vinculadas a la `categoria_id` seleccionada.
 
-### 🔹 Fase 6: Historial y Auditoría (Días 19-21)
+### 🔹 Fase 6: El "Antigravity Engine" (Motor de Giro)
 
-1. **Registro de Giros:** Implementar la inserción automática en la tabla `HISTORIAL` al finalizar la animación.
-2. **Vista de Resultados:** Pantalla para que el usuario consulte sus decisiones previas, recuperando los nombres de las opciones ganadoras.
+* **Lógica de Pesos:** Implementar la función matemática que asigna grados según el campo `peso` de la tabla **OPCION**.
+* **Renderizado:** Uso de `CustomPaint` para dibujar los arcos circulares con los colores definidos en `color_hex`.
+* **Overlay:** Posicionar las imágenes web sobre cada sector usando coordenadas polares.
 
-### 🔹 Fase 7: Optimización y Lanzamiento (Días 22-25)
+### 🔹 Fase 7: Configuración Dinámica y Física
 
-1. **Performance Web:** Habilitar CanvasKit para una renderización fluida en navegadores.
-2. **Builds:** Generar `.apk` (Android), `.ipa` (iOS), `.exe` (Windows) y despliegue en Firebase Hosting (Web).
+* **Parámetros de Giro:** Vincular el `AnimationController` con el campo `duracion_giro_ms` de la tabla **CONFIGURACION**.
+* **Sonido y Esquema:** Aplicar los booleanos de `sonido_activado` y los estilos de `esquema_color` en tiempo real.
+
+### 🔹 Fase 8: Editor de Ruletas y Opciones
+
+* **CRUD de Opciones:** Interfaz para que el usuario añada opciones, asigne pesos y pegue URLs de imágenes externas.
+* **Vista Previa:** Generar una miniatura de la ruleta antes de guardar los cambios en Firestore.
+
+### 🔹 Fase 9: Persistencia del Historial y Resultados
+
+* **Registro Atómico:** Al detenerse el giro, el sistema debe registrar automáticamente el resultado en la tabla **HISTORIAL**.
+* **Auditoría:** Capturar la fecha exacta (`fecha_giro`) y la IP o dispositivo de origen para estadísticas del usuario.
+
+### 🔹 Fase 10: Optimización, Web CanvasKit y Despliegue
+
+* **Optimización Web:** Forzar el renderizado CanvasKit en la versión Web para asegurar que las animaciones de la ruleta sean fluidas a 60 FPS.
+* **Despliegue CI/CD:** Configurar Firebase Hosting para la web y generar ejecutables para Windows y móviles.
 
 ---
 
-## 📦 5. Dependencias Técnicas (`pubspec.yaml`)
+## 🎯 4. Prompt Profesional de Desarrollo (Copia este texto)
 
-* **Firebase:** `firebase_core`, `firebase_auth`, `cloud_firestore`.
-* **Estado:** `provider`.
-* **Imágenes Web:** `cached_network_image`, `shimmer`.
-* **Utilidades:** `uuid` (para IDs de tablas), `intl` (fechas), `audioplayers` (feedback sonoro).
+Actúa como un Senior Fullstack Developer y Arquitecto de Software experto en Flutter y Firebase. Debo desarrollar la aplicación multiplataforma "Antigravity", una suite de toma de decisiones. El sistema debe basarse estrictamente en las siguientes tablas de base de datos relacional en Cloud Firestore: **USUARIO** (id, nombre, email, contrasena_hash, activo, creado_en), **CATEGORIA** (id, nombre, descripcion, icono_url, activo), **RULETA** (id, usuario_id, categoria_id, titulo, es_publica, creado_en), **OPCION** (id, ruleta_id, nombre, peso, color_hex, imagen_url, activo), **CONFIGURACION** (id, ruleta_id, duracion_giro_ms, sonido_activado, repeticion, esquema_color) e **HISTORIAL** (id, ruleta_id, opcion_ganadora_id, usuario_id, fecha_giro, ip_origen).
 
----
-
-## 🎯 Prompt Profesional de Desarrollo (Copia este texto)
-
-> Actúa como un Arquitecto de Software Senior experto en Flutter y Firebase. Debo desarrollar la aplicación "Antigravity", una plataforma multiplataforma de toma de decisiones. El sistema debe basarse estrictamente en las siguientes tablas de base de datos en Cloud Firestore: **USUARIO** (id, nombre, email, contrasena_hash, activo, creado_en), **CATEGORIA** (id, nombre, descripcion, icono_url, activo), **RULETA** (id, usuario_id, categoria_id, titulo, es_publica, creado_en), **OPCION** (id, ruleta_id, nombre, peso, color_hex, imagen_url, activo), **CONFIGURACION** (id, ruleta_id, duracion_giro_ms, sonido_activado, repeticion, esquema) e **HISTORIAL** (id, ruleta_id, opcion_ganadora_id, usuario_id, fecha_giro, ip_origen). Implementa una arquitectura Feature-First con Provider para la gestión de estado. La aplicación debe recuperar imágenes desde URLs web de forma optimizada con caché y renderizar una ruleta dinámica mediante CustomPaint, calculando los sectores según el 'peso' de cada opción. No utilices analíticas de terceros ni herramientas de rastreo; utiliza logs estándar y asegura la funcionalidad offline mediante la persistencia de Firestore. Genera una estructura de código limpia, modular y preparada para Android, iOS, Web y Windows.
+Implementa una arquitectura **Feature-First** con **Provider** para la gestión de estado reactivo. La aplicación debe recuperar imágenes dinámicamente desde URLs web (implementando caché y placeholders tipo Shimmer) para las opciones y categorías. La lógica central debe renderizar una ruleta interactiva mediante **CustomPaint**, calculando el tamaño de los sectores proporcionalmente al campo 'peso' de la tabla OPCION. No incluyas analíticas de terceros ni Crashlytics; utiliza logs de consola estándar y asegura que la aplicación sea responsiva y funcional en Android, iOS, Web y Windows, garantizando la persistencia offline de los datos mediante Firestore.
